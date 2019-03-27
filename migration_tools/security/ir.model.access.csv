@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_migration_tools_migration_module_views_read,migration_tools.migration_module_views_read,model_migration_module_views,,1,0,0,0
+access_migration_tools_migration_module_views_admin,migration_tools.migration_module_views_admin,model_migration_module_views,base.group_erp_manager,1,1,1,1

@@ -1,0 +1,176 @@
+<odoo>
+<data>
+
+    <record id="migration_module_views_tree" model="ir.ui.view">
+        <field name="name">migration.module.views.tree</field>
+        <field name="model">migration.module.views</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="module_id"/>
+                <field name="views_created"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="migration_module_views_form" model="ir.ui.view">
+        <field name="name">migration.module.views.form</field>
+        <field name="model">migration.module.views</field>
+        <field name="arch" type="xml">
+            <form string="description">
+                <header>
+                    <button name="create_module_items" type="object" string="Create Menu Model Views" class="btn-primary"
+                        attrs="{'invisible': [('views_created', '=', True)]}"/><!--  attrs="{'invisible': ['|',('invitation_mail_sent', '=', True), ('state', 'in', ['requested', 'member', 'rejected'])]}" confirm="Do you want to send an email to the user to invite him for his membership validation?"/> -->
+                    <button name="delete_module_items" type="object" string="Delete Created Items for Migration"
+                        attrs="{'invisible': [('views_created', '=', False)]}"/>
+
+                </header>
+                <sheet>
+                    <h1>
+                        <!-- <label string="description"/> -->
+                    </h1>
+                    <group>
+                        <field name="module_id"/>
+                        <field name="root_menu_item_id"/>
+                        <field name="views_created"/>
+                    </group>
+                    <notebook>
+                        <page string="Menu Items">
+                            <field name="sub_menu_item_ids">
+
+                                <field name="child_id" context="{'default_parent_id': active_id}">
+                                    <tree string="Menu">
+                                        <field name="sequence"/>
+                                        <field icon="icon" name="name" string="Menu"/>
+                                    </tree>
+                                    <form string="Menu">
+
+    <group>
+        <group>
+            <field name="name"/>
+            <field name="parent_id" groups="base.group_no_one"/>
+            <field name="sequence" groups="base.group_no_one"/>
+            <field name="module_name" string="Migration Module Name"/>
+            <field name="model_name" string="Migration Model Name"/>
+        </group>
+        <group groups="base.group_no_one">
+            <field name="complete_name"/>
+            <field name="action"/>
+            <field name="web_icon"/>
+            <field name="web_icon_data"/>
+        </group>
+    </group>
+
+                                    </form>
+                                </field>
+                            </field>
+                        </page>
+                        <page string="Action Windows">
+                            <field name="action_window_ids">
+<tree string="Action Windows">
+    <field name="name"/>
+    <field name="xml_id"/><!--  string="External ID"/> -->
+    <field name="res_model"/><!--  string="Object"/> -->
+    <field name="created_for_migration"/>
+</tree>
+<form string="Action Windows">
+    <group>
+        <group>
+            <field name="name"/>
+            <field name="xml_id" string="External ID"/>
+            <field name="res_model" string="Object"/>
+            <field name="src_model" string="Source Object"/>
+        </group>
+        <group>
+            <field name="usage"/>
+            <field name="type" readonly="1"/>
+            <field name="target"/>
+            <field name="created_for_migration"/>
+        </group>
+    </group>
+    <notebook>
+        <page string="General Settings">
+            <group>
+                <group string="Views">
+    <!-- <field name="view_type" string="view_type TEST"/> -->
+                    <field name="view_mode"/>
+                    <field name="view_id"/>
+                    <field name="search_view_id"/>
+                </group>
+                <group string="Filters">
+                    <field name="domain"/>
+                    <field name="context"/>
+                    <field name="limit"/>
+                    <field name="auto_search"/>
+                    <field name="filter"/>
+                    <field name="multi"/>
+                </group>
+            </group>
+            <group string="Help">
+                <field colspan="2" name="help" nolabel="1"/>
+            </group>
+            <group string="Views">
+                <field colspan="2" name="view_ids" nolabel="1">
+                    <form string="Views">
+                        <group>
+                            <field colspan="4" name="sequence"/>
+                            <field name="view_mode"/>
+                            <field domain="[('type', '=', view_mode)]" name="view_id"/>
+                        </group>
+                    </form>
+                    <tree string="Views">
+                        <field name="sequence"/>
+                        <field name="view_mode"/>
+                        <field name="view_id"/>
+                    </tree>
+                </field>
+            </group>
+        </page>
+        <page string="Security">
+            <field name="groups_id"/>
+        </page>
+    </notebook>
+</form>
+                            </field>
+                        </page>
+                        <page string="Action Window Views">
+                            <field name="action_window_views_ids">
+                                <tree string="Views">
+                                    <field name="sequence"/>
+                                    <field name="view_mode"/>
+                                    <field name="view_id"/>
+                                </tree>
+                                <form string="Views">
+                                    <group>
+                                        <field colspan="4" name="sequence"/>
+                                        <field name="view_mode"/>
+                                        <field domain="[('type', '=', view_mode)]" name="view_id"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record id="modules_actionwindow" model="ir.actions.act_window">
+      <field name="name">Migration - Modules</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">migration.module.views</field>
+      <field name="view_id" ref="migration_module_views_tree"/>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Top menu item -->
+    <menuitem id="menu_root" name="Migration Tools" active="True"
+        action="modules_actionwindow"
+        web_icon="base,static/description/settings.png" groups="base.group_erp_manager"/>
+
+    <!-- Level 1 menu items -->
+    <menuitem id="menu_modules" name="Modules" parent="menu_root"
+        action="migration_tools.modules_actionwindow"/>
+
+</data>
+</odoo>
